@@ -14,7 +14,7 @@ def lambda_handler(event, context):
     
     #email
     sns_client.publish(
-        TopicArn='arn:aws:sns:us-east-1:045728217032:Notify-Unused-Volumes',
+        TopicArn='<SNS Topic ARN>',
         Subject='Warning - Unused Volume List',
         Message=str(unused_volumes)
     )
