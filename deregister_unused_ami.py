@@ -45,3 +45,4 @@ def lambda_handler(event, context):
         Subject='Alert - Unused AMIs Are Deregistered',
         Message=str(deregister_list)
     )
+    return "success"
