@@ -1,6 +1,7 @@
 ### Author:-Dheeraj Choudhary
 import boto3
 ec2 = boto3.client('ec2')
+sns_client = boto3.client('sns')
 instances = ec2.describe_instances()
 def lambda_handler(event, context):
     used_ami = []  # Create empty list to save used ami
@@ -31,7 +32,16 @@ def lambda_handler(event, context):
         custom_ami.append(image['ImageId'])
 
     # Check if custom ami is there in used AMI list if not deregister the AMI
+    deregister_list = []
     for ami in custom_ami:
         if ami not in used_ami:
             print("AMI {} has been deregistered".format(ami))
             ec2.deregister_image(ImageId=ami)
+            deg = ("-----Unused AMI ID = {} is Deregistered------".format(ami))
+            deregister_list.append(deg)
+            
+     sns_client.publish(
+        TopicArn='<SNS Topic ARN>',
+        Subject='Alert - Unused AMIs Are Deregistered',
+        Message=str(deregister_list)
+    )
